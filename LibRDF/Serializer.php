@@ -32,8 +32,8 @@
 
 /**
  */
-require_once "LibRDF/Error.php";
-require_once "LibRDF/URI.php";
+require_once(dirname(__FILE__) . '/Error.php');
+require_once(dirname(__FILE__) . '/URI.php');
 
 /**
  * A wrapper around the librdf_serializer datatype.

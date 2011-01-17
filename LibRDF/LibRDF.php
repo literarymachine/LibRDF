@@ -35,14 +35,14 @@
 
 /**
  */
-require_once "LibRDF/Model.php";
-require_once "LibRDF/Node.php";
-require_once "LibRDF/Parser.php";
-require_once "LibRDF/Query.php";
-require_once "LibRDF/Serializer.php";
-require_once "LibRDF/Statement.php";
-require_once "LibRDF/Storage.php";
-require_once "LibRDF/URI.php";
+require_once(dirname(__FILE__) . '/Model.php');
+require_once(dirname(__FILE__) . '/Node.php');
+require_once(dirname(__FILE__) . '/Parser.php');
+require_once(dirname(__FILE__) . '/Query.php');
+require_once(dirname(__FILE__) . '/Serializer.php');
+require_once(dirname(__FILE__) . '/Statement.php');
+require_once(dirname(__FILE__) . '/Storage.php');
+require_once(dirname(__FILE__) . '/URI.php');
 
 /**
  * The URI of the RDF/XML namespace.

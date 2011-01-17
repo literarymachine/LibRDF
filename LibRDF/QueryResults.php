@@ -32,10 +32,10 @@
 
 /**
  */
-require_once "LibRDF/Error.php";
-require_once "LibRDF/URI.php";
-require_once "LibRDF/Iterator.php";
-require_once "LibRDF/Node.php";
+require_once(dirname(__FILE__) . '/Error.php');
+require_once(dirname(__FILE__) . '/URI.php');
+require_once(dirname(__FILE__) . '/Iterator.php');
+require_once(dirname(__FILE__) . '/Node.php');
 
 /**
  * A wrapper around the librdf_query_results datatype.

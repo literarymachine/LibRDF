@@ -32,15 +32,15 @@
 
 /**
  */
-require_once "LibRDF/Error.php";
-require_once "LibRDF/URI.php";
-require_once "LibRDF/Storage.php";
-require_once "LibRDF/Statement.php";
-require_once "LibRDF/Node.php";
-require_once "LibRDF/Iterator.php";
-require_once "LibRDF/LibRDF.php";
-require_once "LibRDF/Parser.php";
-require_once "LibRDF/Serializer.php";
+require_once(dirname(__FILE__) . '/Error.php');
+require_once(dirname(__FILE__) . '/URI.php');
+require_once(dirname(__FILE__) . '/Storage.php');
+require_once(dirname(__FILE__) . '/Statement.php');
+require_once(dirname(__FILE__) . '/Node.php');
+require_once(dirname(__FILE__) . '/Iterator.php');
+require_once(dirname(__FILE__) . '/LibRDF.php');
+require_once(dirname(__FILE__) . '/Parser.php');
+require_once(dirname(__FILE__) . '/Serializer.php');
 
 /**
  * The exception type used for statement lookup failures.

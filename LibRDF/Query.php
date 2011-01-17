@@ -32,9 +32,9 @@
 
 /**
  */
-require_once "LibRDF/Error.php";
-require_once "LibRDF/Model.php";
-require_once "LibRDF/QueryResults.php";
+require_once(dirname(__FILE__) . '/Error.php');
+require_once(dirname(__FILE__) . '/Model.php');
+require_once(dirname(__FILE__) . '/QueryResults.php');
 
 /**
  * A wrapper around the librdf_query datatype.

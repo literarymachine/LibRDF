@@ -38,7 +38,7 @@
 
 /**
  */
-require_once "LibRDF/Statement.php";
+require_once(dirname(__FILE__) . '/Statement.php');
 
 /**
  * Wrap a librdf_stream resource as an iterable object.

@@ -36,8 +36,8 @@
 
 /**
  */
-require_once "LibRDF/Error.php";
-require_once "LibRDF/Node.php";
+require_once(dirname(__FILE__) . '/Error.php');
+require_once(dirname(__FILE__) . '/Node.php');
 
 /**
  * A wrapper around the librdf_statement datatype.
