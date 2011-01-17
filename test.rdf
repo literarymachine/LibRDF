@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <rdf:Description rdf:about="urn:mozilla:install-manifest">
+    <em:id>{ff6d2496-020d-4fee-b049-cb2916621b08}</em:id>
+    <em:name>Annoyance Remover</em:name>
+    <em:version>1.2</em:version>
+    <em:description>Control the visibility of annoying browser popup elements</em:description>
+    <em:creator><![CDATA[David Shea <david@gophernet.org>]]></em:creator>
+    <em:homepageURL>http://gophernet.org/projects/rmannoy/</em:homepageURL>
+    <em:optionsURL>chrome://rmannoy/content/rmannoyPrefs.xul</em:optionsURL>
+    <em:updateURL>http://www.gophernet.org/projects/rmannoy/update.rdf</em:updateURL>
+    <em:type>2</em:type>  <!-- marks this project as an extension -->
+
+    <em:targetApplication>
+      <rdf:Description>
+        <!-- Id for firefox -->
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>1.5</em:minVersion>
+        <em:maxVersion>1.5.0.*</em:maxVersion>
+      </rdf:Description>
+    </em:targetApplication>
+
+  </rdf:Description>
+</rdf:RDF>
