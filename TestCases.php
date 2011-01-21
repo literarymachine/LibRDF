@@ -831,6 +831,55 @@ class ModelTest extends PHPUnit_Framework_TestCase
     //     $this->assertNotEquals($count, 0);
     // }
 
+    public function testLoadStatements()
+    {
+        $this->model->loadStatements('foobar');
+        $count = 0;
+        foreach ($this->model as $statement) {
+            $this->assertType("LibRDF_Statement", $statement);
+            $count++;
+        }
+        // Only the initial 3 statements should be in the model
+        $this->assertEquals($count, 3);
+
+        $data = file_get_contents('test.rdf');
+        $this->model->loadStatements($data);
+        $count = 0;
+        foreach ($this->model as $statement) {
+            $this->assertType("LibRDF_Statement", $statement);
+            $count++;
+        }
+        // 3 initially plus 13 from the file
+        $this->assertEquals($count, 16);
+
+        $this->model->loadStatements('test.rdf');
+        $count = 0;
+        foreach ($this->model as $statement) {
+            $this->assertType("LibRDF_Statement", $statement);
+            $count++;
+        }
+        // 16 from previous load plus 4 new bnodes
+        $this->assertEquals($count, 20);
+
+        $this->model->loadStatements('test.ttl');
+        $count = 0;
+        foreach ($this->model as $statement) {
+            $this->assertType("LibRDF_Statement", $statement);
+            $count++;
+        }
+        // 20 from previous load plus 4 new bnodes
+        $this->assertEquals($count, 24);
+
+        $this->model->loadStatements('file://' . dirname(__FILE__) . '/test.rdf');
+        $count = 0;
+        foreach ($this->model as $statement) {
+            $this->assertType("LibRDF_Statement", $statement);
+            $count++;
+        }
+        // 24 from previous load plus 4 new bnodes
+        $this->assertEquals($count, 28);
+    }
+
     public function testSerialize()
     {
         // just make sure it does something; other tests can make

@@ -24,6 +24,7 @@
  *
  * @package     LibRDF
  * @author      David Shea <david@gophernet.org>
+ * @author      Felix Ostrowski <felix.ostrowski@googlemail.com>
  * @copyright   2006 David Shea
  * @license     LGPL/GPL/APACHE
  * @version     Release: 1.0.0
@@ -41,6 +42,7 @@ require_once(dirname(__FILE__) . '/Iterator.php');
 require_once(dirname(__FILE__) . '/LibRDF.php');
 require_once(dirname(__FILE__) . '/Parser.php');
 require_once(dirname(__FILE__) . '/Serializer.php');
+require_once(dirname(__FILE__) . '/ARC2_getFormat.php');
 
 /**
  * The exception type used for statement lookup failures.
@@ -602,6 +604,46 @@ class LibRDF_Model implements Iterator
         if ($ret) {
             throw new LibRDF_Error("Unable to parse URI into model");
         }
+    }
+
+    /**
+     * Load statements from a URI or string, detecting the necessary parser.
+     *
+     * @param   string          $content    The URI or string with the contents to load
+     * @param   string          $base_uri   The base URI to use for relative URIs
+     * @return  void
+     * @throws  LibRDF_Error    If unable to parse the contents
+     * @access  public
+     */
+    public function loadStatements($content, $base_uri=NULL)
+    {
+        $mtype = '';
+        $ext = '';
+        if (is_file($content)) {
+            $ext = preg_match('/\.([^\.]+)$/', $content, $match)
+                ? $match[1] : '';
+            $data = file_get_contents($content);
+        } else if (filter_var($content, FILTER_VALIDATE_URL)) {
+            $ext = preg_match('/\.([^\.]+)$/', $content, $match)
+                ? $match[1] : '';
+            $ch = curl_init($content);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1) ;
+            $data = curl_exec($ch);
+            if (curl_errno($ch)) {
+                throw new LibRDF_Error("Unable to parse data into model");
+            }
+            $info = curl_getinfo($ch);
+            $mtype = $info['content_type'];
+            curl_close($ch);
+        } else if (is_string($content)) {
+            $data = $content;
+        } else {
+            throw new LibRDF_Error("Unable to parse data into model");
+        }
+        $format = ARC2_getFormat($data, $mtype, $ext);
+        $parser = new LibRDF_Parser($format);
+        $this->loadStatementsFromString($parser, $data,
+                $base_uri);
     }
 
     /**
