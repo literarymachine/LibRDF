@@ -2,12 +2,12 @@
 // $Id: TestCases.php 161 2006-06-15 20:30:03Z das-svn $
 // usage: phpunit TestCases.php
 
-require_once "PHPUnit2/Framework/TestCase.php";
-require_once "PHPUnit2/Framework/TestSuite.php";
+require_once "PHPUnit/Framework/TestCase.php";
+require_once "PHPUnit/Framework/TestSuite.php";
 
 // test the LibRDF_Error class
 require_once "LibRDF/Error.php";
-class ErrorTest extends PHPUnit2_Framework_TestCase
+class ErrorTest extends PHPUnit_Framework_TestCase
 {
     public function testConstructor() {
         $error = new LibRDF_Error();
@@ -35,7 +35,7 @@ class ErrorTest extends PHPUnit2_Framework_TestCase
 
 // test the LibRDF_URI class
 require_once "LibRDF/URI.php";
-class URITest extends PHPUnit2_Framework_TestCase
+class URITest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -84,7 +84,7 @@ class URITest extends PHPUnit2_Framework_TestCase
 
 // test LibRDF_Node and subclasses
 require_once "LibRDF/Node.php";
-class NodeTest extends PHPUnit2_Framework_TestCase {
+class NodeTest extends PHPUnit_Framework_TestCase {
     public function setUp()
     {
         $this->testURI = "http://www.example.com/";
@@ -371,7 +371,7 @@ EOT;
 
 // test the LibRDF_Statement class
 require_once "LibRDF/Statement.php";
-class StatementTest extends PHPUnit2_Framework_TestCase
+class StatementTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -516,7 +516,7 @@ class StatementTest extends PHPUnit2_Framework_TestCase
 
 // test the LibRDF_Storage class
 require_once "LibRDF/Storage.php";
-class StorageTest extends PHPUnit2_Framework_TestCase
+class StorageTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -538,7 +538,7 @@ class StorageTest extends PHPUnit2_Framework_TestCase
 
 // test the LibRDF_Parser class
 require_once "LibRDF/Parser.php";
-class ParserTest extends PHPUnit2_Framework_TestCase
+class ParserTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -594,7 +594,7 @@ class ParserTest extends PHPUnit2_Framework_TestCase
 
 // test the LibRDF_Serializer class
 require_once "LibRDF/Serializer.php";
-class SerializerTest extends PHPUnit2_Framework_TestCase
+class SerializerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -622,7 +622,7 @@ class SerializerTest extends PHPUnit2_Framework_TestCase
 
 // test the LibRDF_Model class
 require_once "LibRDF/Model.php";
-class ModelTest extends PHPUnit2_Framework_TestCase
+class ModelTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -852,7 +852,7 @@ class ModelTest extends PHPUnit2_Framework_TestCase
 // test the LibRDF_Query and LibRDF_QueryResults classes
 require_once "LibRDF/Query.php";
 require_once "LibRDF/QueryResults.php";
-class QueryTest extends PHPUnit2_Framework_TestCase
+class QueryTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -961,17 +961,17 @@ class TestCases
 {
     public static function suite()
     {
-        $suite = new PHPUnit2_Framework_TestSuite();
+        $suite = new PHPUnit_Framework_TestSuite();
         $suite->setName("LibRDF tests");
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("ErrorTest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("URITest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("NodeTest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("StatementTest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("StorageTest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("ParserTest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("SerializerTest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("ModelTest"));
-        $suite->addTest(new PHPUnit2_Framework_TestSuite("QueryTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("ErrorTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("URITest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("NodeTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("StatementTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("StorageTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("ParserTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("SerializerTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("ModelTest"));
+        $suite->addTest(new PHPUnit_Framework_TestSuite("QueryTest"));
         return $suite;
     }
 }
