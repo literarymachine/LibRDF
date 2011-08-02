@@ -59,6 +59,13 @@ class LibRDF_Serializer
     private $serializer;
 
     /**
+     * Namespace mappings shared accross instances.
+     *
+     * @var array
+     */
+    private static $namespaces = array();
+
+    /**
      * Create a new LibRDF_Serializer.
      *
      * Name is the name of the serializer to use.  Common choices are
@@ -87,6 +94,9 @@ class LibRDF_Serializer
 
         if (!$this->serializer) {
             throw new LibRDF_Error("Unable to create new serializer");
+        }
+        foreach (self::$namespaces as $uri => $prefix) {
+            $this->setNamespace($uri, $prefix);
         }
     }
 
@@ -135,6 +145,17 @@ class LibRDF_Serializer
         if ($ret) {
             throw new LibRDF_Error("Unable to set namespace prefix");
         }
+    }
+
+    /**
+     * Set namespace mappings on class level.
+     *
+     * @param  array  $map
+     * @return void
+     */
+    public static function setNamespaces($map)
+    {
+        self::$namespaces = $map;
     }
 }
 ?>
