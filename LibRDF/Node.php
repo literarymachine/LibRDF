@@ -263,6 +263,7 @@ class LibRDF_BlankNode extends LibRDF_Node
  */
 class LibRDF_LiteralNode extends LibRDF_Node
 {
+    
     /**
      * Create a new Literal node.
      *
@@ -384,6 +385,37 @@ class LibRDF_LiteralNode extends LibRDF_Node
     public function getLanguage()
     {
         return librdf_node_get_literal_value_language($this->node);
+    }
+    
+    /**
+     * Whether to append datatype / language
+     * to output of __toString
+     */
+    private static $plainOutput = false;
+    
+    /**
+     * @param bool  $plain
+     */
+    public static function setPlainOutput($plain)
+    {
+        self::$plainOutput = $plain;
+    }
+    
+    /**
+     * Return a string representation of the node.
+     *
+     * @return  string  A string representation of the node
+     * @access  public
+     */
+    public function __toString()
+    {
+        $output = parent::__toString();
+        if (self::$plainOutput and $postfix = $this->getLanguage()) {
+            $output = substr($output, 0, 0 - strlen($postfix) - 1);
+        } else if (self::$plainOutput and $postfix = $this->getDatatype()) {
+            $output = substr($output, 0, 0 - strlen($postfix) - 4);
+        }
+        return $output;
     }
 }
 
