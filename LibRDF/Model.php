@@ -26,6 +26,7 @@
  * @author      David Shea <david@gophernet.org>
  * @author      Felix Ostrowski <felix.ostrowski@googlemail.com>
  * @copyright   2006 David Shea
+ * @copyright   2011, 2012 Felix Ostrowski
  * @license     LGPL/GPL/APACHE
  * @version     Release: 1.0.0
  * @link        http://www.gophernet.org/projects/redland-php/
@@ -695,6 +696,28 @@ class LibRDF_Model implements Iterator
         if ($ret) {
             throw new LibRDF_Error("Error serializing model to file");
         }
+    }
+
+    /**
+     * Turns an RDF list into an ordered PHP array.
+     *
+     * @param  LibRDF_Node  $head The head of the list.
+     * @return array  The list as an array.
+     */
+    public function getListAsArray(LibRDF_Node $head)
+    {
+        $rdfFirst =
+            new LibRDF_URINode('http://www.w3.org/1999/02/22-rdf-syntax-ns#first');
+        $rdfRest = 
+            new LibRDF_URINode('http://www.w3.org/1999/02/22-rdf-syntax-ns#rest');
+        $lst = array();
+        try {
+            $lst[] = $this->getTarget($head, $rdfFirst);
+        } catch (LibRDF_LookupError $e) {
+            return $lst;
+        }
+        $tail = $this->getTarget($head, $rdfRest);
+        return array_merge($lst, $this->getListAsArray($tail));
     }
 }
 
