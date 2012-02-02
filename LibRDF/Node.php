@@ -203,6 +203,23 @@ class LibRDF_URINode extends LibRDF_Node
             throw new LibRDF_Error("Unable to create new URI node");
         }
     }
+
+}
+
+class LibRDF_NS extends LibRDF_URINode
+{
+    /**
+     * Return a new URINode based on this one
+     *
+     * @return  LibRDF_URINode
+     * @access  public
+     */
+    public function __get($localPart) {
+        $str = $this->__toString();
+        return new LibRDF_URINode(
+            substr($str, 1, -1) . $localPart
+        );
+    }
 }
 
 /**
@@ -417,6 +434,7 @@ class LibRDF_LiteralNode extends LibRDF_Node
         }
         return $output;
     }
+
 }
 
 ?>
