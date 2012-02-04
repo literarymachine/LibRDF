@@ -2,8 +2,6 @@
 // $Id: TestCases.php 161 2006-06-15 20:30:03Z das-svn $
 // usage: phpunit TestCases.php
 
-require_once "PHPUnit/Framework/TestCase.php";
-require_once "PHPUnit/Framework/TestSuite.php";
 
 // test the LibRDF_Error class
 require_once "LibRDF/Error.php";
@@ -11,10 +9,10 @@ class ErrorTest extends PHPUnit_Framework_TestCase
 {
     public function testConstructor() {
         $error = new LibRDF_Error();
-        $this->assertType("LibRDF_Error", $error);
+        $this->assertInstanceOf("LibRDF_Error", $error);
 
         $error = new LibRDF_Error("Message");
-        $this->assertType("LibRDF_Error", $error);
+        $this->assertInstanceOf("LibRDF_Error", $error);
     }
 
     public function testMessage() {
@@ -46,7 +44,7 @@ class URITest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $uri = new LibRDF_URI($this->test_string);
-        $this->assertType("LibRDF_URI", $uri);
+        $this->assertInstanceOf("LibRDF_URI", $uri);
     }
 
     public function testToString()
@@ -59,7 +57,7 @@ class URITest extends PHPUnit_Framework_TestCase
     {
         $uri1 = new LibRDF_URI($this->test_string);
         $uri2 = clone $uri1;
-        $this->assertType("LibRDF_URI", $uri2);
+        $this->assertInstanceOf("LibRDF_URI", $uri2);
         $this->assertNotSame($uri1, $uri2);
         $this->assertNotSame($uri1->getURI(), $uri2->getURI());
         $this->assertEquals($this->test_string, $uri2->__toString());
@@ -68,7 +66,7 @@ class URITest extends PHPUnit_Framework_TestCase
     public function testGetURI()
     {
         $uri = new LibRDF_URI($this->test_string);
-        $this->assertType("resource", $uri->getURI());
+        $this->assertInternalType("resource", $uri->getURI());
     }
 
     public function testIsEqual()
@@ -122,14 +120,14 @@ EOT;
     public function testURIConstruct()
     {
         $uri = new LibRDF_URINode($this->testURI);
-        $this->assertType("LibRDF_URINode", $uri);
+        $this->assertInstanceOf("LibRDF_URINode", $uri);
     }
 
     public function testURIAltConstruct()
     {
         $uri = new LibRDF_URINode($this->testURI);
         $uri2 = new LibRDF_URINode($uri->getNode());
-        $this->assertType("LibRDF_URINode", $uri2);
+        $this->assertInstanceOf("LibRDF_URINode", $uri2);
     }
 
     public function testURIConstructFail()
@@ -153,21 +151,21 @@ EOT;
     public function testURIGetNode()
     {
         $uri = new LibRDF_URINode($this->testURI);
-        $this->assertType("resource", $uri->getNode());
+        $this->assertInternalType("resource", $uri->getNode());
     }
 
     public function testURIToString()
     {
         $uri = new LibRDF_URINode($this->testURI);
         $this->assertEquals($uri->__toString(), 
-            "[" . $this->testURI . "]");
+            "<" . $this->testURI . ">");
     }
 
     public function testURIClone()
     {
         $uri1 = new LibRDF_URINode($this->testURI);
         $uri2 = clone $uri1;
-        $this->assertType("LibRDF_URINode", $uri2);
+        $this->assertInstanceOf("LibRDF_URINode", $uri2);
         $this->assertNotSame($uri1, $uri2);
         $this->assertTrue($uri1->isEqual($uri2));
         $this->assertTrue($uri2->isEqual($uri1));
@@ -188,15 +186,15 @@ EOT;
         $blank1 = new LibRDF_BlankNode();
         $blank2 = new LibRDF_BlankNode($this->testNodeID);
 
-        $this->assertType("LibRDF_BlankNode", $blank1);
-        $this->assertType("LibRDF_BlankNode", $blank2);
+        $this->assertInstanceOf("LibRDF_BlankNode", $blank1);
+        $this->assertInstanceOf("LibRDF_BlankNode", $blank2);
     }
 
     public function testBlankAltConstruct()
     {
         $blank1 = new LibRDF_BlankNode();
         $blank2 = new LibRDF_BlankNode($blank1->getNode());
-        $this->assertType("LibRDF_BlankNode", $blank2);
+        $this->assertInstanceOf("LibRDF_BlankNode", $blank2);
     }
 
     public function testBlankConstructFail()
@@ -217,16 +215,16 @@ EOT;
         $blank1 = new LibRDF_BlankNode();
         $blank2 = new LibRDF_BlankNode($this->testNodeID);
 
-        $this->assertType("string", $blank1->__toString());
+        $this->assertInternalType("string", $blank1->__toString());
         $this->assertEquals($blank2->__toString(), 
-            "(" . $this->testNodeID . ")");
+            "_:" . $this->testNodeID);
     }
 
     public function testBlankClone()
     {
         $blank1 = new LibRDF_BlankNode($this->testNodeID);
         $blank2 = clone $blank1;
-        $this->assertType("LibRDF_BlankNode", $blank2);
+        $this->assertInstanceOf("LibRDF_BlankNode", $blank2);
         $this->assertNotSame($blank1, $blank2);
         $this->assertEquals($blank1->__toString(), $blank2->__toString());
     }
@@ -250,14 +248,14 @@ EOT;
         $literal = new LibRDF_LiteralNode($this->testLiteral);
         $literalLang = new LibRDF_LiteralNode($this->testLiteral, NULL,
             $this->testLang);
-        $this->assertType("LibRDF_LiteralNode", $literal);
-        $this->assertType("LibRDF_LiteralNode", $literalLang);
+        $this->assertInstanceOf("LibRDF_LiteralNode", $literal);
+        $this->assertInstanceOf("LibRDF_LiteralNode", $literalLang);
     }
 
     public function testLiteralConstructTyped()
     {
         $literal = new LibRDF_LiteralNode($this->testLiteral, $this->testType);
-        $this->assertType("LibRDF_LiteralNode", $literal);
+        $this->assertInstanceOf("LibRDF_LiteralNode", $literal);
 
         try {
             $literal = new LibRDF_LiteralNode($this->testLiteral,
@@ -268,7 +266,7 @@ EOT;
         }
 
         $literal = new LibRDF_LiteralNode($this->xmllist);
-        $this->assertType("LibRDF_LiteralNode", $literal);
+        $this->assertInstanceOf("LibRDF_LiteralNode", $literal);
 
         try {
             $literal = new LibRDF_LiteralNode($this->xmllist, $this->testType);
@@ -282,7 +280,7 @@ EOT;
     {
         $literal = new LibRDF_LiteralNode($this->testLiteral, $this->testType);
         $literal1 = new LibRDF_LiteralNode($literal->getNode());
-        $this->assertType("LibRDF_LiteralNode", $literal1);
+        $this->assertInstanceOf("LibRDF_LiteralNode", $literal1);
     }
 
     public function testLiteralConstructFail()
@@ -318,14 +316,14 @@ EOT;
     public function testLiteralToString()
     {
         $literal = new LibRDF_LiteralNode($this->testLiteral);
-        $this->assertEquals($literal->__toString(), $this->testLiteral);
+        $this->assertEquals($literal->__toString(), '"' . $this->testLiteral . '"');
     }
 
     public function testLiteralClone()
     {
         $literal1 = new LibRDF_LiteralNode($this->testLiteral);
         $literal2 = clone $literal1;
-        $this->assertType("LibRDF_LiteralNode", $literal2);
+        $this->assertInstanceOf("LibRDF_LiteralNode", $literal2);
         $this->assertNotSame($literal1, $literal2);
         $this->assertTrue($literal1->isEqual($literal2));
     }
@@ -391,7 +389,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
     {
         $statement = new LibRDF_Statement($this->source, $this->predicate,
             $this->target);
-        $this->assertType("LibRDF_Statement", $statement);
+        $this->assertInstanceOf("LibRDF_Statement", $statement);
     }
 
     public function testAltConstructor()
@@ -401,7 +399,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
             librdf_new_node_from_node($this->predicate->getNode()),
             librdf_new_node_from_node($this->target->getNode()));
         $statement = new LibRDF_Statement($librdf_statement);
-        $this->assertType("LibRDF_Statement", $statement);
+        $this->assertInstanceOf("LibRDF_Statement", $statement);
     }
 
     public function testConstructorFail()
@@ -455,15 +453,15 @@ class StatementTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $this->assertEquals($this->statement->__toString(),
-            "{" . $this->source->__toString() . ", " .
-            $this->predicate->__toString() . ", \"" .
-            $this->target->__toString() . "\"}");
+            $this->source->__toString() . " " .
+            $this->predicate->__toString() . " " .
+            $this->target->__toString());
     }
 
     public function testClone()
     {
         $statement2 = clone $this->statement;
-        $this->assertType("LibRDF_Statement", $statement2);
+        $this->assertInstanceOf("LibRDF_Statement", $statement2);
         $this->assertNotSame($statement2, $this->statement);
         $this->assertTrue($this->statement->isEqual($statement2));
         $this->assertTrue($statement2->isEqual($this->statement));
@@ -471,33 +469,33 @@ class StatementTest extends PHPUnit_Framework_TestCase
 
     public function testGetStatement()
     {
-        $this->assertType("resource", $this->statement->getStatement());
+        $this->assertInternalType("resource", $this->statement->getStatement());
     }
 
     public function testGetSubject()
     {
         $subject = $this->statement->getSubject();
-        $this->assertType("LibRDF_Node", $subject);
+        $this->assertInstanceOf("LibRDF_Node", $subject);
         $this->assertTrue($subject->isEqual($this->source));
         $this->assertEquals($subject->__toString(), 
-            "[" . $this->sourceURI . "]");
+            "<" . $this->sourceURI . ">");
     }
 
     public function testGetPredicate()
     {
         $predicate = $this->statement->getPredicate();
-        $this->assertType("LibRDF_Node", $predicate);
+        $this->assertInstanceOf("LibRDF_Node", $predicate);
         $this->assertTrue($predicate->isEqual($this->predicate));
         $this->assertEquals($predicate->__toString(),
-            "[" . $this->predicateURI . "]");
+            "<" . $this->predicateURI . ">");
     }
 
     public function testGetObject()
     {
         $object = $this->statement->getObject();
-        $this->assertType("LibRDF_Node", $object);
+        $this->assertInstanceOf("LibRDF_Node", $object);
         $this->assertTrue($object->isEqual($this->target));
-        $this->assertEquals($object->__toString(), $this->targetValue);
+        $this->assertEquals($object->__toString(), '"' . $this->targetValue . '"');
     }
 
     public function testIsEqual()
@@ -525,14 +523,14 @@ class StorageTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertType("LibRDF_Storage", $this->storage);
+        $this->assertInstanceOf("LibRDF_Storage", $this->storage);
     }
 
     // most storage backends don't support cloning, skipping that test
 
     public function testGetStorage()
     {
-        $this->assertType("resource", $this->storage->getStorage());
+        $this->assertInternalType("resource", $this->storage->getStorage());
     }
 }
 
@@ -549,12 +547,12 @@ class ParserTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertType("LibRDF_Parser", $this->parser);
+        $this->assertInstanceOf("LibRDF_Parser", $this->parser);
     }
 
     public function testGetParser()
     {
-        $this->assertType("resource", $this->parser->getParser());
+        $this->assertInternalType("resource", $this->parser->getParser());
     }
 
     public function testParseString()
@@ -562,7 +560,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
         // the file contains 13 statements, make sure all are parsed
         $count = 0;
         foreach ($this->parser->parseString($this->testXML) as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         $this->assertEquals($count, 13);
@@ -570,7 +568,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $count = 0;
         foreach ($this->parser->parseString($this->testXML,
                 "http://www.example.org/#") as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         $this->assertEquals($count, 13);
@@ -585,7 +583,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
     //     $testURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
     //     foreach ($this->parser->parseURI($testURI) as $statement) {
     //         $count++;
-    //         $this->assertType("LibRDF_Statement", $statement);
+    //         $this->assertInstanceOf("LibRDF_Statement", $statement);
     //     }
     //     echo "Count: $count\n";
     //     $this->assertNotEquals($count, 0);
@@ -603,12 +601,12 @@ class SerializerTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertType("LibRDF_Serializer", $this->serializer);
+        $this->assertInstanceOf("LibRDF_Serializer", $this->serializer);
     }
 
     public function testGetSerializer()
     {
-        $this->assertType("resource", $this->serializer->getSerializer());
+        $this->assertInternalType("resource", $this->serializer->getSerializer());
     }
 
     public function testSetNamespace()
@@ -668,7 +666,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
     public function testConstructor()
     {
         $model = new LibRDF_Model(new LibRDF_Storage());
-        $this->assertType("LibRDF_Model", $model);
+        $this->assertInstanceOf("LibRDF_Model", $model);
     }
 
     public function testToString()
@@ -676,12 +674,12 @@ class ModelTest extends PHPUnit_Framework_TestCase
         // this isn't really meant to be used except as a convenience
         // function, so just check that it spits out a string.  The
         // serializer functions are what really matter
-        $this->assertType("string", $this->model->__toString());
+        $this->assertInternalType("string", $this->model->__toString());
     }
 
     public function testGetModel()
     {
-        $this->assertType("resource", $this->model->getModel());
+        $this->assertInternalType("resource", $this->model->getModel());
     }
 
     // clone isn't supported for memory storage, and I don't feel like
@@ -771,7 +769,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $count = 0;
         foreach ($this->model->findStatements($this->sourceNode1, NULL, NULL)
             as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         $this->assertEquals($count, 2);
@@ -780,7 +778,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $count = 0;
         foreach ($this->model->findStatements(NULL, $this->predNode2, NULL)
             as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         $this->assertEquals($count, 2);
@@ -789,7 +787,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $count = 0;
         foreach ($this->model->findStatements(NULL, NULL, $this->targetNode1)
             as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         $this->assertEquals($count, 1);
@@ -800,7 +798,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         // just make sure that three statements pop out
         $count = 0;
         foreach ($this->model as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         $this->assertEquals($count, 3);
@@ -811,7 +809,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->model->loadStatementsFromString($this->parser, $this->testXML);
         $count = 0;
         foreach ($this->model as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         // 3 initially plus 13 from the file
@@ -826,7 +824,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
     //     $this->model->loadStatementsFromURI($this->parser, $testURI);
     //     foreach ($this->model as $statement) {
     //         $count++;
-    //         $this->assertType("LibRDF_Statement", $statement);
+    //         $this->assertInstanceOf("LibRDF_Statement", $statement);
     //     }
     //     $this->assertNotEquals($count, 0);
     // }
@@ -836,7 +834,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->model->loadStatements('foobar');
         $count = 0;
         foreach ($this->model as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         // Only the initial 3 statements should be in the model
@@ -846,7 +844,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->model->loadStatements($data);
         $count = 0;
         foreach ($this->model as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         // 3 initially plus 13 from the file
@@ -855,7 +853,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->model->loadStatements('test.rdf');
         $count = 0;
         foreach ($this->model as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         // 16 from previous load plus 4 new bnodes
@@ -864,7 +862,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->model->loadStatements('test.ttl');
         $count = 0;
         foreach ($this->model as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         // 20 from previous load plus 4 new bnodes
@@ -873,7 +871,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
         $this->model->loadStatements('file://' . dirname(__FILE__) . '/test.rdf');
         $count = 0;
         foreach ($this->model as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
             $count++;
         }
         // 24 from previous load plus 4 new bnodes
@@ -884,7 +882,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
     {
         // just make sure it does something; other tests can make
         // sure it does the right thing
-        $this->assertType("string", $this->model->serializeStatements($this->serializer));
+        $this->assertInternalType("string", $this->model->serializeStatements($this->serializer));
     }
 
     public function testSerializeToFile()
@@ -941,14 +939,14 @@ class QueryTest extends PHPUnit_Framework_TestCase
 
     public function testConstructor()
     {
-        $this->assertType("LibRDF_Query", $this->rdqlQuery);
+        $this->assertInstanceOf("LibRDF_Query", $this->rdqlQuery);
     }
 
     // clone not implemented and I don't care
     //public function testClone()
     // {
     //     $query = clone $this->rdqlQuery;
-    //     $this->assertType("LibRDF_Query", $query);
+    //     $this->assertInstanceOf("LibRDF_Query", $query);
     //     $this->assertNotSame($this->rdqlQuery, $query);
     // }
     
@@ -956,15 +954,15 @@ class QueryTest extends PHPUnit_Framework_TestCase
     {
         $result1 = $this->rdqlQuery->execute($this->model);
 
-        $this->assertType("LibRDF_QueryResults", $result1);
+        $this->assertInstanceOf("LibRDF_QueryResults", $result1);
     }
 
     public function testBindings()
     {
         $count = 0;
         foreach ($this->rdqlQuery->execute($this->model) as $binding) {
-            $this->assertType("LibRDF_URINode", $binding["a"]);
-            $this->assertType("LibRDF_LiteralNode", $binding["c"]);
+            $this->assertInstanceOf("LibRDF_URINode", $binding["a"]);
+            $this->assertInstanceOf("LibRDF_LiteralNode", $binding["c"]);
             if ($count == 0) {
                 $this->assertTrue($binding["a"]->isEqual($this->sourceNode1));
                 $this->assertTrue($binding["c"]->isEqual($this->targetNode2));
@@ -986,7 +984,7 @@ class QueryTest extends PHPUnit_Framework_TestCase
 
         $count = 0;
         foreach ($trueQuery->execute($this->model) as $bool) {
-            $this->assertType("boolean", $bool);
+            $this->assertInternalType("boolean", $bool);
             $count++;
         }
         $this->assertEquals($count, 1);
@@ -998,8 +996,8 @@ class QueryTest extends PHPUnit_Framework_TestCase
         $graphQuery = new LibRDF_Query("CONSTRUCT { <http://www.example.com/sources/#s1> <http://www.example.com/predicates/#p3> ?name } WHERE { ?x <http://www.example.com/predicates/#p2> ?name }", NULL, "sparql");
         $count = 0;
         foreach ($graphQuery->execute($this->model) as $statement) {
-            $this->assertType("LibRDF_Statement", $statement);
-            $this->assertEquals($statement->getPredicate()->__toString(), "[http://www.example.com/predicates/#p3]");
+            $this->assertInstanceOf("LibRDF_Statement", $statement);
+            $this->assertEquals($statement->getPredicate()->__toString(), "<http://www.example.com/predicates/#p3>");
             $count++;
         }
         $this->assertEquals($count, 2);
