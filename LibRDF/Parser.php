@@ -33,7 +33,7 @@
 /**
  */
 require_once(dirname(__FILE__) . '/Error.php');
-require_once(dirname(__FILE__) . '/Iterator.php');
+require_once(dirname(__FILE__) . '/StreamIterator.php');
 require_once(dirname(__FILE__) . '/URI.php');
 require_once(dirname(__FILE__) . '/LibRDF.php');
 

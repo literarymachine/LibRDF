@@ -729,6 +729,12 @@ class ModelTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    public function testGetSources()
+    {
+        $sources = $this->model->getSources($this->predNode1, $this->targetNode1);
+        $this->assertTrue($this->sourceNode1->isEqual($sources->current()));
+    }
+
     public function testGetArc()
     {
         $arc = $this->model->getArc($this->sourceNode1, $this->targetNode1);
@@ -742,6 +748,12 @@ class ModelTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    public function testGetArcs()
+    {
+        $arcs = $this->model->getArcs($this->sourceNode1, $this->targetNode1);
+        $this->assertTrue($this->predNode1->isEqual($arcs->current()));
+    }
+
     public function testGetTarget()
     {
         $target = $this->model->getTarget($this->sourceNode1, $this->predNode1);
@@ -753,6 +765,12 @@ class ModelTest extends PHPUnit_Framework_TestCase
         } catch (LibRDF_LookupError $e) {
             $this->assertTrue(true);
         }
+    }
+
+    public function testGetTargets()
+    {
+        $targets = $this->model->getTargets($this->sourceNode1, $this->predNode1);
+        $this->assertTrue($this->targetNode1->isEqual($targets->current()));
     }
 
     public function testHasStatement() {
