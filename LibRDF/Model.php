@@ -39,6 +39,7 @@ require_once(dirname(__FILE__) . '/URI.php');
 require_once(dirname(__FILE__) . '/Storage.php');
 require_once(dirname(__FILE__) . '/Statement.php');
 require_once(dirname(__FILE__) . '/Node.php');
+require_once(dirname(__FILE__) . '/StreamIterator.php');
 require_once(dirname(__FILE__) . '/Iterator.php');
 require_once(dirname(__FILE__) . '/LibRDF.php');
 require_once(dirname(__FILE__) . '/Parser.php');
@@ -308,6 +309,27 @@ class LibRDF_Model implements Iterator
     }
 
     /**
+     * Return source nodes that are part of a statement containing the
+     * given predicate and object.
+     *
+     * @param   LibRDF_Node     $arc    The arc node for which to search
+     * @param   LibRDF_Node     $target The target node for which to search
+     * @return  LibRDF_Iterator         An iterator for nodes that matches the criteria
+     * @throws  LibRDF_LookupError      If no statement with the given source and predicate is found
+     * @access  public
+     */
+    public function getSources(LibRDF_Node $arc, LibRDF_Node $target)
+    {
+        $sources = librdf_model_get_sources($this->model,
+            $arc->getNode(), $target->getNode());
+        if ($sources) {
+            return new LibRDF_Iterator($sources, $this);
+        } else {
+            throw new LibRDF_Error("Failed to create iterator");
+        }
+    }
+
+    /**
      * Return a single predicate node that is part of a statement containing
      * the given source and target.
      *
@@ -332,6 +354,27 @@ class LibRDF_Model implements Iterator
     }
 
     /**
+     * Return arc nodes that are part of a statement containing the
+     * given source and predicate.
+     *
+     * @param   LibRDF_Node     $source The source node for which to search
+     * @param   LibRDF_Node     $target The target node for which to search
+     * @return  LibRDF_Iterator         An iterator for nodes that matches the criteria
+     * @throws  LibRDF_LookupError      If no statement with the given source and predicate is found
+     * @access  public
+     */
+    public function getArcs(LibRDF_Node $source, LibRDF_Node $target)
+    {
+        $arcs = librdf_model_get_arcs($this->model,
+            $source->getNode(), $target->getNode());
+        if ($arcs) {
+            return new LibRDF_Iterator($arcs, $this);
+        } else {
+            throw new LibRDF_Error("Failed to create iterator");
+        }
+    }
+
+    /**
      * Return a single target node that is part of a statement containing the
      * given source and predicate.
      *
@@ -352,6 +395,27 @@ class LibRDF_Model implements Iterator
             return LibRDF_Node::makeNode($target);
         } else {
             throw new LibRDF_LookupError("No such statement");
+        }
+    }
+
+    /**
+     * Return target nodes that are part of a statement containing the
+     * given source and predicate.
+     *
+     * @param   LibRDF_Node     $source The source node for which to search
+     * @param   LibRDF_Node     $arc    The predicate node for which to search
+     * @return  LibRDF_Iterator         An iterator for nodes that matches the criteria
+     * @throws  LibRDF_LookupError      If no statement with the given source and predicate is found
+     * @access  public
+     */
+    public function getTargets(LibRDF_Node $source, LibRDF_Node $arc)
+    {
+        $targets = librdf_model_get_targets($this->model,
+            $source->getNode(), $arc->getNode());
+        if ($targets) {
+            return new LibRDF_Iterator($targets, $this);
+        } else {
+            throw new LibRDF_Error("Failed to create iterator");
         }
     }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Wrap a librdf_iterator as a PHP iterator using SPL.
+ * Wrap a librdf_stream as a PHP iterator using SPL.
  *
  * PHP version 5
  *
@@ -34,20 +34,25 @@
 require_once(dirname(__FILE__) . '/Statement.php');
 
 /**
- * Wrap a librdf_iterator resource as an iterable object.
+ * Wrap a librdf_stream resource as an iterable object.
+ *
+ * This class should not be created directly, nor are its methods of interest
+ * to the casual user.  Its only intent is to provide a return type for
+ * LibRDF_Model::find_statements, as well as the underlying iterator for both
+ * LibRDF_Model and LibRDF_GraphQueryResults, that can then be used in a PHP
+ * foreach statement without any direct function calls.
  *
  * Objects of this type may only be used for iteration once.  Once iteration
  * has begun, a call to rewind will render the object invalid.
  *
  * @package     LibRDF
- * @author      Felix Ostrowski <felix.ostrowski@googlemail.com>
  * @author      David Shea <david@gophernet.org>
- * @copyright   2006 David Shea, 2012 Felix Ostrowski
+ * @copyright   2006 David Shea
  * @license     LGPL/GPL/APACHE
  * @version     Release: 1.0.0
  * @link        http://www.gophernet.org/projects/redland-php/
  */
-class LibRDF_Iterator implements Iterator
+class LibRDF_StreamIterator implements Iterator
 {
     /**
      * A cache of whether the iterator is still valid.
@@ -58,17 +63,17 @@ class LibRDF_Iterator implements Iterator
     private $isvalid;
 
     /**
-     * The underlying librdf_iterator resource.
+     * The underlying librdf_stream resource.
      *
      * @var     resource
      * @access  private
      */
-    private $iterator;
+    private $stream;
 
     /**
      * An integer used to provide keys over the iteration.
      *
-     * There are no keys created by the librdf_iterator data, so iteration
+     * There are no keys created by the librdf_stream data, so iteration
      * keys are created as an integer with an initial value of 0 increasing
      * by one for each call of {@link next}.
      *
@@ -78,8 +83,8 @@ class LibRDF_Iterator implements Iterator
     private $key;
 
     /**
-     * A reference to the iterator's source object to prevent it from being
-     * garbage collected before the iterator.
+     * A reference to the stream's source object to prevent it from being
+     * garbage collected before the stream.
      *
      * @var     mixed
      * @access  private
@@ -87,10 +92,10 @@ class LibRDF_Iterator implements Iterator
     private $source;
 
     /**
-     * A flag for whether the iterator is rewindable.
+     * A flag for whether the stream is rewindable.
      *
-     * A iterator may be rewound before {@link next} is called, after which 
-     * rewinding invalidates the iterator.
+     * A stream may be rewound before {@link next} is called, after which 
+     * rewinding invalidates the stream.
      *
      * @var     boolean
      * @access  private
@@ -98,20 +103,20 @@ class LibRDF_Iterator implements Iterator
     private $rewindable;
 
     /**
-     * Create a new iterable object from a librdf_iterator resource.
+     * Create a new iterable object from a librdf_stream resource.
      *
-     * User functions should not create librdf_iterator resources directly,
+     * User functions should not create librdf_stream resources directly,
      * so this constructor is intended only to provide an interface into the
-     * iterators returned by librdf functions and called by LibRDF classes.
+     * streams returned by librdf functions and called by LibRDF classes.
      *
-     * @param   resource    $iterator     The librdf_iterator object to wrap
-     * @param   mixed       $source     The object that created the iterator
+     * @param   resource    $stream     The librdf_stream object to wrap
+     * @param   mixed       $source     The object that created the stream
      * @return  void
      * @access  public
      */
-    public function __construct($iterator, $source=NULL)
+    public function __construct($stream, $source=NULL)
     {
-        $this->iterator = $iterator;
+        $this->stream = $stream;
         $this->isvalid = true;
         $this->key = 0;
         $this->source = $source;
@@ -119,38 +124,38 @@ class LibRDF_Iterator implements Iterator
     }
 
     /**
-     * Free the iterator's resources.
+     * Free the stream's resources.
      *
      * @return  void
      * @access  public
      */
     public function __destruct()
     {
-        if ($this->iterator) {
-            librdf_free_iterator($this->iterator);
+        if ($this->stream) {
+            librdf_free_stream($this->stream);
         }
     }
 
     /**
-     * Clone a LibRDF_Iterator object.
+     * Clone a LibRDF_StreamIterator object.
      *
-     * Cloning a iterator is unsupported, so using the clone operator on a
-     * LibRDF_Iterator object will produce an empty iterator.
+     * Cloning a stream is unsupported, so using the clone operator on a
+     * LibRDF_StreamIterator object will produce an empty iterator.
      *
      * @return  void
      * @access  public
      */
     public function __clone()
     {
-        $this->iterator = NULL;
+        $this->stream = NULL;
         $this->isvalid = false;
     }
 
     /**
-     * Rewind the iterator.
+     * Rewind the stream.
      *
-     * Rewinding is not supported, so this call invalidates the iterator unless
-     * the iterator is still at the starting position.
+     * Rewinding is not supported, so this call invalidates the stream unless
+     * the stream is still at the starting position.
      *
      * @return  void
      * @access  public
@@ -163,21 +168,21 @@ class LibRDF_Iterator implements Iterator
     }
 
     /**
-     * Return the current node or NULL if the iterator is no longer valid.
+     * Return the current statement or NULL if the stream is no longer valid.
      *
-     * @return  LibRDF_Statement    The current node on the iterator
+     * @return  LibRDF_Statement    The current statement on the iterator
      * @access  public
      */
     public function current()
     {
-        if (($this->isvalid) and (!librdf_iterator_end($this->iterator))) {
-            // the pointer returned is overwritten when the iterator is
-            // advanced or closed, so make a copy of the node
-            $ret = librdf_iterator_get_object($this->iterator);
+        if (($this->isvalid) and (!librdf_stream_end($this->stream))) {
+            // the pointer returned is overwritten when the stream is
+            // advanced or closed, so make a copy of the statement
+            $ret = librdf_stream_get_object($this->stream);
             if ($ret) {
-                return LibRDF_Node::makeNode(librdf_new_node_from_node($ret));
+                return new LibRDF_Statement(librdf_new_statement_from_statement($ret));
             } else {
-                throw new LibRDF_Error("Unable to get current node");
+                throw new LibRDF_Error("Unable to get current statement");
             }
         } else {
             return NULL;
@@ -185,7 +190,7 @@ class LibRDF_Iterator implements Iterator
     }
 
     /**
-     * Return the key of the current element on the iterator.
+     * Return the key of the current element on the stream.
      *
      * @return  integer     The current key
      * @access  public
@@ -196,7 +201,7 @@ class LibRDF_Iterator implements Iterator
     }
 
     /**
-     * Advance the iterator's position.
+     * Advance the stream's position.
      *
      * @return  void
      * @access  public
@@ -205,7 +210,7 @@ class LibRDF_Iterator implements Iterator
     {
         if ($this->isvalid) {
             $this->rewindable = false;
-            $ret = librdf_iterator_next($this->iterator);
+            $ret = librdf_stream_next($this->stream);
             if ($ret) {
                 $this->isvalid = false;
             } else {
@@ -215,14 +220,14 @@ class LibRDF_Iterator implements Iterator
     }
 
     /**
-     * Return whether the iterator is still valid.
+     * Return whether the stream is still valid.
      *
-     * @return  boolean     Whether the iterator is still valid
+     * @return  boolean     Whether the stream is still valid
      * @access  public
      */
     public function valid()
     {
-        if (($this->isvalid) and (!librdf_iterator_end($this->iterator))) {
+        if (($this->isvalid) and (!librdf_stream_end($this->stream))) {
             return true;
         } else {
             return false;
