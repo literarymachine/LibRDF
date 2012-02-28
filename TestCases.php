@@ -2,8 +2,6 @@
 // $Id: TestCases.php 161 2006-06-15 20:30:03Z das-svn $
 // usage: phpunit TestCases.php
 
-require_once "PHPUnit/Framework/TestCase.php";
-require_once "PHPUnit/Framework/TestSuite.php";
 
 // test the LibRDF_Error class
 require_once "LibRDF/Error.php";
@@ -160,7 +158,7 @@ EOT;
     {
         $uri = new LibRDF_URINode($this->testURI);
         $this->assertEquals($uri->__toString(), 
-            "[" . $this->testURI . "]");
+            "<" . $this->testURI . ">");
     }
 
     public function testURIClone()
@@ -219,7 +217,7 @@ EOT;
 
         $this->assertType("string", $blank1->__toString());
         $this->assertEquals($blank2->__toString(), 
-            "(" . $this->testNodeID . ")");
+            "_:" . $this->testNodeID);
     }
 
     public function testBlankClone()
@@ -318,7 +316,7 @@ EOT;
     public function testLiteralToString()
     {
         $literal = new LibRDF_LiteralNode($this->testLiteral);
-        $this->assertEquals($literal->__toString(), $this->testLiteral);
+        $this->assertEquals($literal->__toString(), '"' . $this->testLiteral . '"');
     }
 
     public function testLiteralClone()
@@ -455,9 +453,9 @@ class StatementTest extends PHPUnit_Framework_TestCase
     public function testToString()
     {
         $this->assertEquals($this->statement->__toString(),
-            "{" . $this->source->__toString() . ", " .
-            $this->predicate->__toString() . ", \"" .
-            $this->target->__toString() . "\"}");
+            $this->source->__toString() . " " .
+            $this->predicate->__toString() . " " .
+            $this->target->__toString());
     }
 
     public function testClone()
@@ -480,7 +478,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
         $this->assertType("LibRDF_Node", $subject);
         $this->assertTrue($subject->isEqual($this->source));
         $this->assertEquals($subject->__toString(), 
-            "[" . $this->sourceURI . "]");
+            "<" . $this->sourceURI . ">");
     }
 
     public function testGetPredicate()
@@ -489,7 +487,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
         $this->assertType("LibRDF_Node", $predicate);
         $this->assertTrue($predicate->isEqual($this->predicate));
         $this->assertEquals($predicate->__toString(),
-            "[" . $this->predicateURI . "]");
+            "<" . $this->predicateURI . ">");
     }
 
     public function testGetObject()
@@ -497,7 +495,7 @@ class StatementTest extends PHPUnit_Framework_TestCase
         $object = $this->statement->getObject();
         $this->assertType("LibRDF_Node", $object);
         $this->assertTrue($object->isEqual($this->target));
-        $this->assertEquals($object->__toString(), $this->targetValue);
+        $this->assertEquals($object->__toString(), '"' . $this->targetValue . '"');
     }
 
     public function testIsEqual()
@@ -1017,7 +1015,7 @@ class QueryTest extends PHPUnit_Framework_TestCase
         $count = 0;
         foreach ($graphQuery->execute($this->model) as $statement) {
             $this->assertType("LibRDF_Statement", $statement);
-            $this->assertEquals($statement->getPredicate()->__toString(), "[http://www.example.com/predicates/#p3]");
+            $this->assertEquals($statement->getPredicate()->__toString(), "<http://www.example.com/predicates/#p3>");
             $count++;
         }
         $this->assertEquals($count, 2);

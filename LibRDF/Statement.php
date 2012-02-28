@@ -126,7 +126,14 @@ class LibRDF_Statement
      */
     public function __toString()
     {
-        return librdf_statement_to_string($this->statement);
+        $rs = librdf_statement_to_string($this->statement);
+        if ("1.0.11" > librdf_version_string_get()) {
+            $s = $this->getSubject();
+            $p = $this->getPredicate();
+            $o = $this->getObject();
+            $rs = "$s $p $o";
+        }
+        return $rs;
     }
 
     /**

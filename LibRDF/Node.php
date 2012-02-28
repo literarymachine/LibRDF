@@ -101,7 +101,17 @@ abstract class LibRDF_Node
      */
     public function __toString()
     {
-        return librdf_node_to_string($this->node);
+        $rs = librdf_node_to_string($this->node);
+        if ("1.0.11" > librdf_version_string_get()) {
+            if (librdf_node_is_resource($this->node)) {
+                $rs = '<' . substr($rs, 1, -1) . '>';
+            } elseif (librdf_node_is_literal($this->node)) {
+                $rs = '"' . $rs . '"';
+            } elseif (librdf_node_is_blank($this->node)) {
+                $rs = '_:' . substr($rs, 1, -1);
+            }
+        }
+        return $rs;
     }
 
     /**
