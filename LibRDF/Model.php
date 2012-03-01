@@ -657,7 +657,11 @@ class LibRDF_Model implements Iterator
     public function loadStatementsFromURI(LibRDF_Parser $parser,
         $uri, $base_uri=NULL)
     {
-        $uri = new LibRDF_URI($uri);
+        if ($uri instanceof LibRDF_URINode) {
+            $uri = new LibRDF_URI(substr($uri, 1, -1));
+        } else {
+            $uri = new LibRDF_URI($uri);
+        }
         if ($base_uri) {
             $base_uri = new LibRDF_URI($base_uri);
         }
