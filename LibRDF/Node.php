@@ -438,9 +438,11 @@ class LibRDF_LiteralNode extends LibRDF_Node
     {
         $output = parent::__toString();
         if (self::$plainOutput and $postfix = $this->getLanguage()) {
-            $output = substr($output, 0, 0 - strlen($postfix) - 1);
+            $output = substr($output, 1, 0 - strlen($postfix) - 2);
         } else if (self::$plainOutput and $postfix = $this->getDatatype()) {
-            $output = substr($output, 0, 0 - strlen($postfix) - 4);
+            $output = substr($output, 1, 0 - strlen($postfix) - 5);
+        } else if (self::$plainOutput) {
+            $output = substr($output, 1, -1);
         }
         return $output;
     }
