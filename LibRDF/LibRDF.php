@@ -39,6 +39,7 @@ require_once(dirname(__FILE__) . '/Model.php');
 require_once(dirname(__FILE__) . '/Node.php');
 require_once(dirname(__FILE__) . '/Parser.php');
 require_once(dirname(__FILE__) . '/Query.php');
+require_once(dirname(__FILE__) . '/Reasoner.php');
 require_once(dirname(__FILE__) . '/Serializer.php');
 require_once(dirname(__FILE__) . '/Statement.php');
 require_once(dirname(__FILE__) . '/Storage.php');
