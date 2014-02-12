@@ -1,6 +1,6 @@
 <?php
 /**
- * LibRDF_Reasoner, TODO
+ * LibRDF_Reasoner, an RDFS inference engine
  *
  * PHP version 5
  *
@@ -34,92 +34,110 @@ require_once(dirname(__FILE__) . '/Model.php');
 require_once(dirname(__FILE__) . '/Query.php');
 
 /**
- * TODO: short description.
- * 
- * TODO: long description.
- * 
+ * Simple RDFS inference engine, based on SPARQL queries
  */
 class LibRDF_Reasoner {
 
-  protected $_inferenceQueries = array();
-
   /**
-   * TODO: short description.
-   * 
-   * @param  string  $type 
+   * Add inferred (implicit) statements to instance data
+   *
+   * @param  LibRDF_Model  $tbox The model containing the ontology
+   * @param  LibRDF_Model  $abox The model containing instance data
    */
-  public function __construct($type) {
-    $this->_inferenceQueries = $this->_rdfsQueries();
+  public function inferStatements(LibRDF_Model $tbox, LibRDF_Model $abox) {
+    $this->_inferStatements($this->buildQueries($tbox), $abox);
   }
 
   /**
-   * TODO: short description.
-   * 
-   * @param  LibRDF_Model  $tbox 
-   * @param  LibRDF_Model  $abox 
-   * @return TODO
+   * Recursively apply SPARQL CONSTRUCT queries until no new triples are
+   * generated.
+   *
+   * @param  mixed  $queries The queries to excecute to generate
+   *                         inferred triples
+   * @param  array  $abox    The instance data that the inferred triples
+   *                         will be added to
    */
-  public function inferStatements(LibRDF_Model $model) {
-    $result = new LibRDF_Model(new LibRDF_Storage());
-    $this->_inferStatements($model, $result);
-    return $result;
-  }
-
-  protected function _inferStatements(LibRDF_Model $model, LibRDF_Model $result) {
+  protected function _inferStatements($queries, $abox) {
     $add_count = 0;
-    foreach ($this->_inferenceQueries as $query) {
-      $inferred = $query->execute($model);
+    foreach ($queries as $query) {
+      $inferred = $query->execute($abox);
       foreach ($inferred as $triple) {
-        if (!$model->hasStatement($triple)) {
-          $model->addStatement($triple);
-          $result->addStatement($triple);
+        if (!$abox->hasStatement($triple)) {
+          $abox->addStatement($triple);
           $add_count++;
         }
       }
     }
-    if ($add_count > 0) $this->_inferStatements($model, $result);
+    if ($add_count > 0) $this->_inferStatements($queries, $abox);
   }
 
   /**
-   * TODO: short description.
-   * 
-   * @return TODO
+   * Generate SPARQL CONSTRUCT queries based on an ontology model
+   *
+   * @param  LibRDF_Model  $tbox The ontology model
    */
-  protected function _rdfsQueries() {
-
+  public function buildQueries(LibRDF_Model $tbox) {
     $RDFS = new LibRDF_NS('http://www.w3.org/2000/01/rdf-schema#');
 
-    $rdfsSubpropertyOfQuery = new LibRDF_Query("
-      CONSTRUCT { ?subject ?property ?object } WHERE {
-        ?subProperty {$RDFS->subPropertyOf} ?property .
-        ?subject ?subProperty ?object.
-      } ", null, 'sparql');
+    $rdfsQueries = array();
 
-    $rdfsDomainQuery = new LibRDF_Query("
-      CONSTRUCT { ?subject a ?class } WHERE {
-        ?property {$RDFS->domain} ?class .
-        ?subject ?property ?object.
-      } ", null, 'sparql');
-
-    $rdfsRangeQuery = new LibRDF_Query("
-      CONSTRUCT { ?object a ?class } WHERE {
-        ?property {$RDFS->range} ?class .
-        ?subject ?property ?object.
-      } ", null, 'sparql');
-
-    $rdfsSubclassOfQuery = new LibRDF_Query("
-      CONSTRUCT { ?subject a ?class } WHERE {
-        ?subClass {$RDFS->subClassOf} ?class .
-        ?subject a ?subClass .
-      } ", null, 'sparql');
-
-    return array(
-      $rdfsSubpropertyOfQuery,
-      $rdfsDomainQuery,
-      $rdfsRangeQuery,
-      $rdfsSubclassOfQuery,
+    $rdfsSubPropertyOfStmts = $tbox->findStatements(
+      null, $RDFS->subPropertyOf, null
     );
+    foreach ($rdfsSubPropertyOfStmts as $rdfsSubPropertyOfStmt) {
+      $rdfsSubPropertyOfQueryString = sprintf(
+        "CONSTRUCT {?s %s ?o} WHERE {?s %s ?o}\n",
+        $rdfsSubPropertyOfStmt->getObject(),
+        $rdfsSubPropertyOfStmt->getSubject()
+      );
+      $rdfsQueries[] = new LibRDF_Query(
+        $rdfsSubPropertyOfQueryString, null, 'sparql'
+      );
+    }
 
+    $rdfsSubClassOfStmts = $tbox->findStatements(
+      null, $RDFS->subClassOf, null
+    );
+    foreach ($rdfsSubClassOfStmts as $rdfsSubClassOfStmt) {
+      $rdfsSubClassOfQueryString = sprintf(
+        "CONSTRUCT {?s a %s} WHERE {?s a %s}\n",
+        $rdfsSubClassOfStmt->getObject(),
+        $rdfsSubClassOfStmt->getSubject()
+      );
+      $rdfsQueries[] = new LibRDF_Query(
+        $rdfsSubClassOfQueryString, null, 'sparql'
+      );
+    }
+
+    $rdfsDomainStmts = $tbox->findStatements(
+      null, $RDFS->domain, null
+    );
+    foreach ($rdfsDomainStmts as $rdfsDomainStmt) {
+      $rdfsDomainQueryString = sprintf(
+        "CONSTRUCT {?s a %s} WHERE {?s %s _:o}\n",
+        $rdfsDomainStmt->getObject(),
+        $rdfsDomainStmt->getSubject()
+      );
+      $rdfsQueries[] = new LibRDF_Query(
+        $rdfsDomainQueryString, null, 'sparql'
+      );
+    }
+
+    $rdfsRangeStmts = $tbox->findStatements(
+      null, $RDFS->range, null
+    );
+    foreach ($rdfsRangeStmts as $rdfsRangeStmt) {
+      $rdfsRangeQueryString = sprintf(
+        "CONSTRUCT {?o a %s} WHERE {_:s %s ?o}\n",
+        $rdfsRangeStmt->getObject(),
+        $rdfsRangeStmt->getSubject()
+      );
+      $rdfsQueries[] = new LibRDF_Query(
+        $rdfsRangeQueryString, null, 'sparql'
+      );
+    }
+
+    return $rdfsQueries;
   }
 
 }
