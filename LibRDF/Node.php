@@ -214,6 +214,32 @@ class LibRDF_URINode extends LibRDF_Node
         }
     }
 
+    /**
+     * Get the namespace of a URI
+     *
+     * @return LibRDF_NS The namespace
+     */
+    public function getNamespace() {
+      $split = strrpos($this, '#');
+      if (!$split) {
+        $split = strrpos($this, '/');
+      }
+      return new LibRDF_NS(substr($this, 1, $split));
+    }
+
+    /**
+     * Get the local part of a URI
+     *
+     * @return string The local part
+     */
+    public function getLocalPart() {
+      $split = strrpos($this, '#');
+      if (!$split) {
+        $split = strrpos($this, '/');
+      }
+      return substr($this, $split + 1, -1);
+    }
+
 }
 
 class LibRDF_NS extends LibRDF_URINode
