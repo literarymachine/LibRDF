@@ -240,6 +240,16 @@ class LibRDF_URINode extends LibRDF_Node
       return substr($this, $split + 1, -1);
     }
 
+    /**
+     * Return the plain string of this URI
+     *
+     * @return string  The URI's value
+     */
+    public function getValue()
+    {
+        return substr($this, 1, -1);
+    }
+
 }
 
 class LibRDF_NS extends LibRDF_URINode
@@ -439,36 +449,20 @@ class LibRDF_LiteralNode extends LibRDF_Node
     {
         return librdf_node_get_literal_value_language($this->node);
     }
-    
+
     /**
-     * Whether to append datatype / language
-     * to output of __toString
-     */
-    private static $plainOutput = false;
-    
-    /**
-     * @param bool  $plain
-     */
-    public static function setPlainOutput($plain)
-    {
-        self::$plainOutput = $plain;
-    }
-    
-    /**
-     * Return a string representation of the node.
+     * Return the plain string of this literal
      *
-     * @return  string  A string representation of the node
-     * @access  public
+     * @return string  The literal's value
      */
-    public function __toString()
+    public function getValue()
     {
-        $output = parent::__toString();
-        if (self::$plainOutput and $postfix = $this->getLanguage()) {
-            $output = substr($output, 1, 0 - strlen($postfix) - 2);
-        } else if (self::$plainOutput and $postfix = $this->getDatatype()) {
-            $output = substr($output, 1, 0 - strlen($postfix) - 5);
-        } else if (self::$plainOutput) {
-            $output = substr($output, 1, -1);
+        if ($postfix = $this->getLanguage()) {
+            $output = substr($this, 1, 0 - strlen($postfix) - 2);
+        } else if ($postfix = $this->getDatatype()) {
+            $output = substr($this, 1, 0 - strlen($postfix) - 5);
+        } else {
+            $output = substr($this, 1, -1);
         }
         return $output;
     }
