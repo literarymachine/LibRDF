@@ -310,6 +310,17 @@ class LibRDF_BlankNode extends LibRDF_Node
             throw new LibRDF_Error("Unable to create new blank node");
         }
     }
+
+    /**
+     * Return the plain string of this bnode
+     *
+     * @return string  The bnode's value
+     */
+    public function getValue()
+    {
+        return "$this";
+    }
+
 }
 
 /**
