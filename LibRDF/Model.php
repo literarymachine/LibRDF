@@ -26,7 +26,7 @@
  * @author      David Shea <david@gophernet.org>
  * @author      Felix Ostrowski <felix.ostrowski@googlemail.com>
  * @copyright   2006 David Shea
- * @copyright   2011, 2012 Felix Ostrowski
+ * @copyright   2011, 2012, 2014 Felix Ostrowski
  * @license     LGPL/GPL/APACHE
  * @version     Release: 1.0.0
  * @link        http://www.gophernet.org/projects/redland-php/
@@ -43,6 +43,7 @@ require_once(dirname(__FILE__) . '/StreamIterator.php');
 require_once(dirname(__FILE__) . '/Iterator.php');
 require_once(dirname(__FILE__) . '/LibRDF.php');
 require_once(dirname(__FILE__) . '/Parser.php');
+require_once(dirname(__FILE__) . '/Reasoner.php');
 require_once(dirname(__FILE__) . '/Serializer.php');
 require_once(dirname(__FILE__) . '/ARC2_getFormat.php');
 
@@ -787,6 +788,19 @@ class LibRDF_Model implements Iterator
         $tail = $this->getTarget($head, $rdfRest);
         return array_merge($lst, $this->getListAsArray($tail));
     }
+
+    /**
+     * Add inferred triples to the model.
+     *
+     * @param  LibRDF_Reasoner  $reasoner The reasoner used to infer triples
+     * @param  LibRDF_Model     $tbox     The ontology model for the reasoner
+     */
+    public function inferStatements(LibRDF_Reasoner $reasoner,
+        LibRDF_Model $tbox)
+    {
+        $reasoner->inferStatements($tbox, $this);
+    }
+
 }
 
 ?>
