@@ -475,7 +475,7 @@ class LibRDF_LiteralNode extends LibRDF_Node
         } else {
             $output = substr($this, 1, -1);
         }
-        return $output;
+        return json_decode('"'.$output.'"');
     }
 
 }
